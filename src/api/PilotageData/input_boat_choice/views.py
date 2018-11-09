@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from .db import get_db_with_attr_condition, get_row_mysql
-from .str_sql import pre_choice, boat_date
-
+from .str_sql import pre_choice, boat_date, boat_jt, boat_jt_err, boat_plan_in
+PAGE_SIZE = 10
 
 class DemoDataView(GenericAPIView):
 
@@ -28,21 +28,77 @@ class BoatListView(GenericAPIView):
         return Response(data)
 
 
-class PreChoiceBoatlist(GenericAPIView):
+class BaseViewNoModel(GenericAPIView):
+    def get_queryset(self):
+        return None
 
-    def get(self, request, number=10):
-        limit = ' LIMIT %s' %str(number)
-        print(pre_choice, 'row mysql str')
-        pre_choice_end = pre_choice + limit
-        data = get_row_mysql(pre_choice_end)
-        return Response(data=data)
+    def parse_request(self, request):
+        page_number = request.query_params.get('page', 1)
+        page_size = request.query_params.get('page_size', PAGE_SIZE)
+        return page_number, page_size
+        
+    def page_handle(self,page_number=1, page_size=PAGE_SIZE):
+        return ' LIMIT {}, {}'.format(str((page_number - 1)*page_size), str(page_size))
+
+    def query_sql(self, sql_name):
+        res = {'results': []}
+        try:
+            data = get_row_mysql(sql_name)
+        except Exception as e :
+            print('ERROR: {}'.format(str(e)))
+            res = {'results': [],
+                    'is_success': 0,
+                    'err_msg': str(e)}
+        else:
+            print(data, "DATA IN VIEW")
+            res = {'results': data,
+                    'is_success': 1}
+            return res
+
+class PreChoiceBoatlist(BaseViewNoModel, GenericAPIView):
+
+    def get(self, request):
+        page_number, page_size = self.parse_request(request)
+        limit = self.page_handle(page_number,page_size)
+        pre_choice_end = pre_choice + limit if limit else ''
+        data = self.query_sql(pre_choice_end)
+        return Response(data, status=status.HTTP_200_OK)
+
+class BoatDatelist(BaseViewNoModel, GenericAPIView):
+
+    def get(self, request):
+        # add 分页操作
+        page_number, page_size = self.parse_request(request)
+        limit = self.page_handle(page_number,page_size)
+        boat_date_end = boat_date + limit if limit else ''
+        data = self.query_sql(boat_date_end)
+        return Response(data, status=status.HTTP_200_OK)
 
 
-class BoatDatelist(GenericAPIView):
+class BoatGroupValidlist(BaseViewNoModel, GenericAPIView):
 
-    def get(self, request, number=10):
-        limit = ' LIMIT %s' %str(number)
-        print(boat_date, 'row mysql str')
-        boat_date_end = boat_date + limit
-        data = get_row_mysql(boat_date_end)
-        return Response(data=data)
+    def get(self, request):
+        page_number, page_size = self.parse_request(request)
+        limit = self.page_handle(page_number,page_size)
+        boat_jt_end = boat_jt + limit if limit else ''
+        data = self.query_sql(boat_jt_end)
+        return Response(data, status=status.HTTP_200_OK)
+
+class BoatGroupUnValidlist(BaseViewNoModel, GenericAPIView):
+
+    def get(self, request):
+        # TODO no ETA attr returned from mysql
+        page_number, page_size = self.parse_request(request)
+        limit = self.page_handle(page_number,page_size)
+        boat_jt_err_end = boat_jt_err + limit if limit else ''
+        data = self.query_sql(boat_jt_err_end)
+        return Response(data, status=status.HTTP_200_OK)
+
+class BoatPlanlist(BaseViewNoModel, GenericAPIView):
+
+    def get(self, request):
+        page_number, page_size = self.parse_request(request)
+        limit = self.page_handle(page_number,page_size)
+        boat_plan_in_end = boat_plan_in + limit if limit else ''
+        data = self.query_sql(boat_plan_in_end)
+        return Response(data, status=status.HTTP_200_OK)

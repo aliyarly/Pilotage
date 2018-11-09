@@ -40,4 +40,5 @@ def get_row_mysql(sql):
     with connection.cursor() as cursor:
         cursor.execute(sql)
         row = dictfetchall(cursor)
-    return row
+        print(row, "ROW GTE FROM SQL DB")
+        return row
