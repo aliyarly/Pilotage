@@ -101,4 +101,5 @@ class BoatPlanlist(BaseViewNoModel, GenericAPIView):
         limit = self.page_handle(page_number,page_size)
         boat_plan_in_end = boat_plan_in + limit if limit else ''
         data = self.query_sql(boat_plan_in_end)
+        print(data)
         return Response(data, status=status.HTTP_200_OK)

@@ -7,7 +7,7 @@ pre_choice = """
     ,(select t_code_systemcode.vcsysdesc from t_code_systemcode where trim(t_code_systemcode.vcsyscode)='chArrivePlaceSign' and t_code_systemcode.vcsysvalue=a.chArrivePlaceSign) as chArrivePlaceSign 
     ,(select t_code_dock.vcdockname from t_code_dock where t_code_dock.chdockcode=a.CHDOCKCODE) as DOCKname
     ,(select t_code_dock.insortno from t_code_dock where t_code_dock.chdockcode=a.Chdockcode) as insortno 
-    FROM T_SAILING_SAILINFO a , t_base_vesinfo b
+    FROM t_sailing_sailinfo a , t_base_vesinfo b
     WHERE a.chvesid=b.chvesid and (a.chunitreserve=2 and a.chConfirmFlag <>1 AND a.CHPRESELECTFLAG=1)
     ORDER BY a.eta ASC ,a.vcVesEName asc,insortno asc
 """
@@ -41,7 +41,7 @@ SELECT  a.NMSAILNUM as NMSAILNUM, a.ETA  as ETA, a.chVesID, a.vcVesCName, a.vcVe
 		,(select t_code_placecode.vcplacesname from t_code_placecode where t_code_placecode.chplacecode=c.chberthsign) as chberthsignname
 		,c.Sdberthtimeconfirmed
 		,c.CREATEDATE
-    FROM t_sailing_sailinfo a , t_base_vesinfo b, T_PLANWORKHB c
+    FROM t_sailing_sailinfo a , t_base_vesinfo b, t_planworkhb c
     WHERE a.chvesid=b.chvesid
           and a.nmsailnum = c.nmsailnum
           and b.chmmsi =c.chmmsi and CHPLANFLAG='0' and c.chpilotagestate='1'
@@ -70,17 +70,15 @@ SELECT NMSAILNUM as NMSAILNUM, VCCNAME vcVesCName, VCENAME vcVesEName
 
 boat_plan_in="""
 SELECT
-    (select INSORTNO from t_code_dock where trim(t_code_dock.chdockcode)=trim(b.CHDOCKARRIVERCODE)) as INBERTHNO,
-         b.vcVesCName,
-         b.vcVesEName,
-     (select t_code_nationcode.vcnationcnname from t_code_nationcode where t_code_nationcode.vcnationcode=b.chNationCode) as chNationCode,
-		(select t_code_vestypecode.vcvestypename from t_code_vestypecode where t_code_vestypecode.chvestypecode=b.chvestypecode) as  vestypecode,
-         b.nmVesLength,
-			(select t_code_dock.vcdockname from t_code_dock where t_code_dock.chdockcode=b.CHDOCKARRIVERCODE) as DOCKname
- FROM
-         t_planwork b
-  where
-    b.CHPILOTAGESTATE='1'
-    and (IFNULL(b.chAttemperFlag,'0') = '0') and CHCOMFLAG='0'  and b.CHPILOTAGESTATE='1'
-  ORDER BY  INBERTHNO ASC, b.VCVESCNAME ASC
+(select INSORTNO from t_code_dock where trim(t_code_dock.chdockcode)=trim(b.CHDOCKARRIVERCODE)) as INBERTHNO,
+b.vcVesCName,b.vcVesEName,
+(select t_code_nationcode.vcnationcnname from t_code_nationcode where t_code_nationcode.vcnationcode=b.chNationCode) as chNationCode,
+(select t_code_vestypecode.vcvestypename from t_code_vestypecode where t_code_vestypecode.chvestypecode=b.chvestypecode) as  vestypecode,
+b.nmVesLength,
+(select t_code_dock.vcdockname from t_code_dock where t_code_dock.chdockcode=b.CHDOCKARRIVERCODE) as DOCKname
+FROM t_planwork b
+where 
+b.CHPILOTAGESTATE='1'
+and (IFNULL(b.chAttemperFlag,'0') = '0') and CHCOMFLAG='0' and b.CHPILOTAGESTATE='1'
+ORDER BY  INBERTHNO ASC, b.VCVESCNAME ASC
 """
