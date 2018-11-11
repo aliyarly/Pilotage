@@ -26,3 +26,15 @@ export function getPilotStatus(id){
         method: 'get',
     });
 }
+
+export function getPilotUpDeatil(id){
+    return request(`${API_URL}input/rank/pilot/detail/up/${id}/`, {
+        method: 'get',
+    });
+}
+
+export function getPilotDownDeatil(id){
+    return request(`${API_URL}input/rank/pilot/detail/down/${id}/`, {
+        method: 'get',
+    });
+}

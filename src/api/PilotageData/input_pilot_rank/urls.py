@@ -14,5 +14,9 @@ urlpatterns = [
             name='input_pilot_rank_right'), 
     re_path(r'^pilot/status/$', PilotStatusView.as_view(),
             name='input_pilot_status'),  
+    re_path(r'^pilot/detail/up/(?P<pilot_id>[0-9]+)/$', PilotDetailUpView.as_view(),
+            name='input_pilot_detail_up'),
+    re_path(r'^pilot/detail/down/(?P<pilot_id>[0-9]+)/$', PilotDetailDownView.as_view(),
+            name='input_pilot_detail_down'),
                          
 ]

@@ -1,7 +1,8 @@
 
 import { routerRedux } from 'dva/router';
 import { getPlanList, getPlanDetail, 
-  getPilotRight,getPilotStatus } from '../services/inputPilotRank.js';
+  getPilotRight,getPilotStatus,
+  getPilotUpDeatil, getPilotDownDeatil } from '../services/inputPilotRank.js';
 import {_isNotNull} from '../utils/utils';
 
 export default {
@@ -9,10 +10,20 @@ export default {
     namespace: 'inputPilotRank',
   
     state: {
+      //左边列表数据
       inputPlanLeftData:null,
+      //右边选中引水的id
+      currentPlanId: null,
+      //右边选中详情的id
       currentPilotId: null,
-      inputPilotDetail: null,
-      pilotStatus: null
+      //右边列表数据
+      inputPilotList: null,
+      pilotStatus: null,
+      //右边详情数据
+      inputPilotUpDetail: null,
+      inputPilotDownDetail: null,
+      //获取的自动派人的数据
+      autoData: null
     },
   
     subscriptions: {
@@ -35,7 +46,7 @@ export default {
             yield put({
               type: 'resetInfo',
               payload: {
-                currentPilotId: payload.pilotId,
+                currentPlanId: payload.planId,
                 },
             }) 
             yield put(routerRedux.replace(`/input/pilot/detail/${payload.pilotId}/`))
@@ -46,7 +57,7 @@ export default {
               yield put({
                 type: 'resetInfo',
                 payload: {
-                  inputPilotDetail: _isNotNull(data) ? data.results : null,
+                  inputPilotList: _isNotNull(data) ? data.results : null,
                   },
               }); 
               return {data}
@@ -64,7 +75,30 @@ export default {
               return {data}
             }  
           },
-         
+          *queryPilotUpDeatil({payload}, {call, put}){
+            const { data, err } = yield call(getPilotUpDeatil, payload.id);
+            if (!err) {
+              yield put({
+                type: 'resetInfo',
+                payload: {
+                  inputPilotUpDetail: _isNotNull(data) ? data.results : null,
+                  },
+              }); 
+              return {data}
+            }  
+          },
+          *queryPilotDownDeatil({payload}, {call, put}){
+            const { data, err } = yield call(getPilotDownDeatil, payload.id);
+            if (!err) {
+              yield put({
+                type: 'resetInfo',
+                payload: {
+                  inputPilotDownDetail: _isNotNull(data) ? data.results : null,
+                  },
+              }); 
+              return {data}
+            }  
+          },
     },
   
     reducers: {

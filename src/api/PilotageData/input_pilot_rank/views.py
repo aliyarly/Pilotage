@@ -32,7 +32,13 @@ where
       and a.CHPILOTAGESTATE='1' and (a.CHPORT  not in ( 7,8,5,6) or a.chport is null ) 
 order by DTAPPOINTTIME,inplaceno*1,a.nmVesLength*1 desc
 """
-left_detail_sql = """"""
+right_detail_sql = """
+select chpilotcode, chpilotno, vcpilotname, chpilotgrade, chpilotclass, chpilotstate, inpilotorder,
+       nmsamevesorder, dtstationtime, vcstationplace, nmworktime, chpilotfungrade,vcberthcode, dtberthtime,
+       dtinstationtime,DTPLANENDTIME,NMNIGHTWORKFLAG,CHCOVERSENDFLAG 
+from t_base_pilotinfo
+where CHPILOTADSCRIPTCODE='1' and  CHWORKFLAG ='1' and CHPILOTSTATE='2'
+"""
 right_list_sql = """
 select chpilotcode, chpilotno, vcpilotname, chpilotgrade, chpilotclass, chpilotstate, inpilotorder,
        nmsamevesorder, dtstationtime, vcstationplace, nmworktime, chpilotfungrade,vcberthcode, dtberthtime,
@@ -83,4 +89,17 @@ class PilotStatusView(BaseViewNoModel, GenericAPIView):
         pilot_status_sql_end = pilot_status_sql + limit if limit else ''
         data = self.query_sql(pilot_status_sql_end)
         return Response(data, status=status.HTTP_200_OK)
-        
+
+class PilotDetailUpView(BaseViewNoModel, GenericAPIView):
+    # 获取引航员详细信息（上半部分数据）,参数pilot_id为引航员的id值
+    def get(self, request, pilot_id):
+        page_number, page_size = self.parse_request(request)
+        limit = self.page_handle(page_number,page_size)
+        right_detail_sql_end = right_detail_sql + limit if limit else ''
+        data = self.query_sql(right_detail_sql_end)
+        return Response(data, status=status.HTTP_200_OK)     
+
+class PilotDetailDownView(BaseViewNoModel, GenericAPIView):
+    # 获取引航员详细信息（上半部分数据）->需要自行补全算法
+    def get(self, request, pilot_id):
+        pass

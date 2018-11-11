@@ -18,6 +18,23 @@ export default class RankPlanList extends PureComponent {
 
     columns = [
         { title: '序', width: 100, dataIndex: 'INNO', key: '   INNO'},
+        {
+            title: '操作',
+            key: 'action',
+            dataIndex: 'action',
+            width: 60,
+            render: (text, record) => {
+                return (
+                <span>
+                  {text.map((item, index) => 
+                  <span>
+                  <a onClick={() => this._action(record, item, index)}>{item}</a> <Divider type="vertical" />
+                  </span>
+                )}
+                </span>
+                )
+                }
+        },
         { title: '中文船名', width: 100, dataIndex: 'vcVesCName', key: 'vcVesCName'
         },
         { title: '船长', dataIndex: 'nmVesLength', key: 'nmVesLength', width: 100 },
@@ -35,23 +52,7 @@ export default class RankPlanList extends PureComponent {
         { title: '拖轮', dataIndex: 'chDragVesClass', key: 'chDragVesClass', width: 60 },
         { title: '引航员要求', dataIndex: 'vcPilotRequire', key: 'vcPilotRequire', width: 200 },
         { title: '船籍', dataIndex: 'CHNATIONCODE', key: 'CHNATIONCODE', width: 100 },
-        {
-            title: '操作',
-            key: 'action',
-            dataIndex: 'action',
-            width: 160,
-            render: (text, record) => {
-                return (
-                <span>
-                  {text.map((item, index) => 
-                  <span>
-                  <a onClick={() => this._action(record, item, index)}>{item}</a> <Divider type="vertical" />
-                  </span>
-                )}
-                </span>
-                )
-                }
-          }
+        
     ];
     _action = (record, text, index) => {
         console.log(record, text, index);    
@@ -112,7 +113,7 @@ export default class RankPlanList extends PureComponent {
                 chDragVesClass: '测试',
                 vcPilotRequire: '测试',
                 CHNATIONCODE: '测试',
-                action: ['引水', '详情']
+                action: ['引水']
             });
           }
         // 真实数据
@@ -138,7 +139,7 @@ export default class RankPlanList extends PureComponent {
                     chDragVesClass: data.chDragVesClass,
                     vcPilotRequire: data.vcPilotRequire,
                     CHNATIONCODE: data.CHNATIONCODE,
-                    action: ['引水', '详情']
+                    action: ['引水']
                   });
               })
         }

@@ -59,8 +59,10 @@ export default class SearchBar extends React.PureComponent {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        //获取select选择的值
         const parsedValues = delUndefinedKey(values);
         if ('search' in this.props && typeof this.props.search === 'function') {
+          // 发起后端请求，携带NMSORT进行查询
           this.props.search(parsedValues);
         }
       }
@@ -89,7 +91,7 @@ export default class SearchBar extends React.PureComponent {
                 )
               }
               <Col {...spanLayouts} className={styles.btn}>
-                <Button type="danger" onClick={this._resetForm}>{Intl.get('base.reset')}</Button>
+                {/* <Button type="danger" onClick={this._resetForm}>{Intl.get('base.reset')}</Button> */}
                 <Button type="primary" htmlType="submit" >{Intl.get('base.search')}</Button>
               </Col>
             </Row>
