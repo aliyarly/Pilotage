@@ -58,7 +58,6 @@ export default class RankPilotList extends PureComponent {
     columns = [
         { title: '操作', dataIndex: '', key: 'x',  width: 60,
         render: (text, record) => {
-            console.log(text, record, "PILOT")
             return (
             <span>
               <PilotInfoModal record={record} 
@@ -88,16 +87,17 @@ export default class RankPilotList extends PureComponent {
         //通常用于分页请求
         console.log('get table data now', value)
     }
-    rowSelection = {
-        // 选择行数据
-        onChange: (selectedRowKeys, selectedRows) => {
-          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        },
-        getCheckboxProps: record => ({
-          disabled: record.name === 'Disabled User', // Column configuration not to be checked
-          name: record.name,
-        }),
-      };
+    onSelectChange = (selectedRowKeys) => {
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        this.setState({ selectedRowKeys });
+        //存储右边表中选择的数据至store,为每行的key值
+        this.props.dispatch({
+            type: 'inputPilotRank/storePilotids',
+            payload:{
+                pilotIds: selectedRowKeys
+            }  
+        })
+    }
     search = e => {
          //获取选择的引航员状态，
          //发送事件去远端get数据，更新state.inputPilotRank.inputPilotDetail,自动触发渲染
@@ -177,6 +177,11 @@ export default class RankPilotList extends PureComponent {
                   });
               })
         }
+        const { selectedRowKeys } = this.state;
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+        };
         return (
             <Card bordered={false} bodyStyle={{padding: '0px', heught: '460px' }}
             >  
@@ -185,7 +190,7 @@ export default class RankPilotList extends PureComponent {
                     search={this.search} 
                     reset={this.reset} 
                 />
-                <Table  rowSelection={this.rowSelection}
+                <Table  rowSelection={rowSelection}
                         columns = {this.columns}
                         dataSource = {dataSource} 
                         scroll={{ x: 350, y: 580 }} 

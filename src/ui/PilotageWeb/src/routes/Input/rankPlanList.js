@@ -14,7 +14,9 @@ export default class RankPlanList extends PureComponent {
             type: 'inputPilotRank/queryLeftData',
           })
     }
-
+    state = {
+        selectedRowKeys: [],
+      };
 
     columns = [
         { title: '序', width: 100, dataIndex: 'INNO', key: '   INNO'},
@@ -81,14 +83,17 @@ export default class RankPlanList extends PureComponent {
             }
         });
     }
-    rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-          console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        },
-        getCheckboxProps: record => ({
-          disabled: record.name === 'Disabled User', // Column configuration not to be checked
-          name: record.name,
-        }),
+
+    onSelectChange = (selectedRowKeys) => {
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        this.setState({ selectedRowKeys });
+        //存储左边表中选择的数据至store
+        this.props.dispatch({
+            type: 'inputPilotRank/storePlanids',
+            payload:{
+                planIds: selectedRowKeys
+            }  
+        })
     }
 
     render(){
@@ -143,12 +148,17 @@ export default class RankPlanList extends PureComponent {
                   });
               })
         }
+        const { selectedRowKeys } = this.state;
+        const rowSelection = {
+            selectedRowKeys,
+            onChange: this.onSelectChange,
+          };
         return (
             <Card bordered={true} bodyStyle={{padding: '0px'}}
                >  
                 <Tabs defaultActiveKey="sh">
                     <TabPane tab="上海" key="sh">
-                        <Table rowSelection={this.rowSelection}
+                        <Table rowSelection={rowSelection}
                             columns = {this.columns}
                             dataSource = {dataSource} 
                             scroll={{ x: 1300, y: 460 }}

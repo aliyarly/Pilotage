@@ -17,7 +17,8 @@ export default class HelpText extends Component {
 		super(props);
 		this.state = {
       showChart: false,
-			userNumOption: {},
+      userNumOption: {},
+      pilotInfoOption: {}
 		}
   }
   _getData = ()=>{
@@ -74,10 +75,43 @@ export default class HelpText extends Component {
               }
             ]
           },
+          // 双折线图实例
+          pilotInfoOption:{
+            title : {
+              text: '近期工作情况',
+              show: true         
+            },
+            color:['#0097E0','#FF9FAA',],
+            legend: {
+              data: ['白班','夜班'],
+            },
+            xAxis: {
+                name: '天数',
+                type: 'category',
+                data: [1,2,3,4,5],
+            },
+            yAxis: {
+              name:'休息时间间隔',
+                type: 'value'
+            },
+            series: [{
+                data: [10,15,0,35,0],
+                type: 'line',
+                name: '白班'
+            },
+          {
+            data: [20,0,30, 0, 0],
+                type: 'line',
+                name: '夜班'
+          }]
+        },
           showChart: true
         },()=>{
           let userNum = document.querySelector('#userNum');
           this.showChart(this.state.userNumOption, userNum);
+          let pilotInfo = document.querySelector('#pilotInfo');
+          console.log(this.state.pilotInfoOption, pilotInfo)
+          this.showChart(this.state.pilotInfoOption, pilotInfo);
         })
       }
     // })
@@ -100,6 +134,9 @@ export default class HelpText extends Component {
                 <Card title={this.state.userNumOption.title.text}>
                   <div className={styles.chart} id='userNum'></div>
                 </Card>
+              </Col>
+              <Col className="gutter-row" lg={24} md={24}>
+                    <div className={styles.chart} id='pilotInfo'></div>
               </Col>
             </Row>
             :'未获取到数据'

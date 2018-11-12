@@ -32,6 +32,9 @@ where
       and a.CHPILOTAGESTATE='1' and (a.CHPORT  not in ( 7,8,5,6) or a.chport is null ) 
 order by DTAPPOINTTIME,inplaceno*1,a.nmVesLength*1 desc
 """
+left_detail_sql ="""
+
+"""
 right_detail_sql = """
 select chpilotcode, chpilotno, vcpilotname, chpilotgrade, chpilotclass, chpilotstate, inpilotorder,
        nmsamevesorder, dtstationtime, vcstationplace, nmworktime, chpilotfungrade,vcberthcode, dtberthtime,
@@ -62,7 +65,7 @@ class PilotRankListView(BaseViewNoModel, GenericAPIView):
 
 
 class PilotRankDetailView(BaseViewNoModel, GenericAPIView):
-    # 获取某个引航计划列表数据
+    # 获取某个引航计划详细数据
     def get(self, request, plan_id):
         page_number, page_size = self.parse_request(request)
         limit = self.page_handle(page_number,page_size)
@@ -100,6 +103,8 @@ class PilotDetailUpView(BaseViewNoModel, GenericAPIView):
         return Response(data, status=status.HTTP_200_OK)     
 
 class PilotDetailDownView(BaseViewNoModel, GenericAPIView):
-    # 获取引航员详细信息（上半部分数据）->需要自行补全算法
+    # 获取引航员详细信息（下半部分数据）->需要自行补全算法
     def get(self, request, pilot_id):
-        pass
+        data={"results":[],
+            "is_success":1}
+        return Response(data, status=status.HTTP_200_OK)

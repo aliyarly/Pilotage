@@ -22,6 +22,9 @@ export default {
       //右边详情数据
       inputPilotUpDetail: null,
       inputPilotDownDetail: null,
+      // 传递给自动派人的数据
+      planIds: [],
+      pilotIds: [],
       //获取的自动派人的数据
       autoData: null
     },
@@ -99,6 +102,22 @@ export default {
               return {data}
             }  
           },
+          *storePlanids({payload}, {put}){
+            yield put({
+              type: 'resetInfo',
+              payload: {
+                planIds: payload.planIds
+              },
+          })
+        },
+        *storePilotids({payload}, {put}){
+          yield put({
+            type: 'resetInfo',
+            payload: {
+                pilotIds: payload.pilotIds
+              },
+        })
+      },
     },
   
     reducers: {
