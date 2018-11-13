@@ -28,7 +28,7 @@ export function createGroup(payload){
         needSerialize: true
     }).then(({data, err}) => {
         if (!err) {
-          return data;
+          return {data};
         }
         return Promise.reject(err);
       });

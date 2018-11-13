@@ -4,14 +4,13 @@ import { Table, Card,Button,Select,} from 'antd';
 import PilotInfoModal from 'components/pilotInfoModal';
 import SearchBar from 'components/SearchBar';
 import TableWithSearchBar from 'components/TableWithSearchBar';
-
+import { push } from 'react-router-redux';
 const Option = Select.Option;
 
 @connect(state=>({
     inputPilotList: state.inputPilotRank.inputPilotList,
     pilotStatus: state.inputPilotRank.pilotStatus,
     inputPilotUpDetail: state.inputPilotRank.inputPilotUpDetail,
-    inputPilotDownDetail:state.inputPilotRank.inputPilotDownDetail
 }))
 export default class RankPilotList extends PureComponent {
     state = {
@@ -37,6 +36,15 @@ export default class RankPilotList extends PureComponent {
 
 
     }
+
+    _clearInfo = () =>{
+        this.props.dispatch({
+            type: 'inputPilotRank/resetInfo',
+            payload: {
+                inputPilotUpDetail: null
+            }
+          })
+    }
     getPilotInfoModelData = (pilotId) => {
         //获取引航员详情的上半部分数据
         this.props.dispatch({
@@ -45,15 +53,17 @@ export default class RankPilotList extends PureComponent {
                 id: pilotId ? pilotId : 1
             }
           })
-        //获取引航员详情的下半部分数据
-          this.props.dispatch({
-            type: 'inputPilotRank/queryPilotDownDeatil',
-            payload: {
-                id: pilotId ? pilotId : 1
+    }
+    getPilotInfoData = (record, text) => {
+        //打开新的页面
+        console.log(record, text, 'click 信息')
+        this.getPilotInfoModelData(record.key)
+        this.props.dispatch({
+            type: 'inputPilotRank/routePilotDetail',
+            payload:{
+            pilotId: record.key || 1,
             }
-          })
-
-
+        });
     }
     columns = [
         { title: '操作', dataIndex: '', key: 'x',  width: 60,
@@ -62,10 +72,15 @@ export default class RankPilotList extends PureComponent {
             <span>
               <PilotInfoModal record={record} 
               onOk={this._ckeckInfo}
+              onCancel={this._clearInfo}
               getModelData={this.getPilotInfoModelData}
               ModelUp={this.props.inputPilotUpDetail}
-              ModelDown={this.props.inputPilotDownDetail}>
-                <a style={{marginRight: 10 }}>信息</a>
+              >
+               <a style={{marginRight: 10 }}>
+                    信息</a>
+                {/* <a style={{marginRight: 10 }}　
+                    onClick={() => this.getPilotInfoData(record, text)}>
+                信息</a> */}
               </PilotInfoModal>
             </span>)
         }

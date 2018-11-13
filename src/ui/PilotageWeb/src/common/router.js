@@ -94,9 +94,14 @@ export const getRouterData = app => {
       name: '进口看板图表'
     },
     // -> 进口引航员排名详情页面
-    '/input/pilot/detail/:id': {
+    '/input/pilot_plan/detail/:id': {
       component: dynamicWrapper(app, [], () => import('../routes/Input/rankPlanDetail')),
-      name: '详情'
+      name: '计划详情'
+    },
+    // -> 进口引航员排名详情页面
+    '/input/pilot/detail/:id': {
+      component: dynamicWrapper(app, [], () => import('../routes/Input/rankPilotDetail')),
+      name: '引航员详情'
     },
     // Number 4 ->进口调度页面
     '/input/schedule': {

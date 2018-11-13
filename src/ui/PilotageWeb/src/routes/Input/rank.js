@@ -13,7 +13,8 @@ import AutoPilotModal from 'components/AutoPilotModal';
 const Content = Layout.Content;
 @connect(state=>({
   planIds: state.inputPilotRank.planIds,
-  pilotIds:state.inputPilotRank.pilotIds
+  pilotIds:state.inputPilotRank.pilotIds,
+  autoData:state.inputPilotRank.autoData
 }))
 export default class InputPlan extends PureComponent {
 
@@ -37,12 +38,25 @@ export default class InputPlan extends PureComponent {
   getAutoInfoModelData = (autoIds) => {
     //TODO想后端发起自动派人的请求，并保存数据
     console.log(autoIds, 'get auto data with plan ids and pilot ids')
-
+    this.props.dispatch({
+      type: 'inputPilotRank/queryAutoPilotInfo',
+      payload: {
+        autoIds: autoIds
+      }
+    })
   }
   getManInfoModelData = (e) => {
     //发起手动派人的请求，并保存数据,暂时不处理
 
   }
+  _clearInfo = () =>{
+    this.props.dispatch({
+        type: 'inputPilotRank/resetInfo',
+        payload: {
+            autoData: null
+        }
+      })
+}
   //第三个页面的入口
   render() {
     
@@ -73,19 +87,9 @@ export default class InputPlan extends PureComponent {
       [
         {
           key: 'planId',
-          planId:  '测试数据',
-          vescName: '测试数据',
-          vesLength: '测试数据'
-        },{
-          key: 'vescName',
-          planId:  '测试数据',
-          vescName: '测试数据',
-          vesLength: '测试数据'
-        },{
-          key: 'vesLength',
-          planId:  '测试数据',
-          vescName: '测试数据',
-          vesLength: '测试数据'
+          planId:  '暂无',
+          vescName: '暂无',
+          vesLength: '暂无'
         }
       ]
     //自动派人所选择的左侧和右侧数据集合{planIds:[], pilotIds: []}用于获取自动派人结果
@@ -117,13 +121,14 @@ export default class InputPlan extends PureComponent {
             onOk={this._checkAutoInfo}
             getModelData={this.getAutoInfoModelData}
             autoIds = {autoIds}
+            onCancel={this._clearInfo}
             >
               <Button type="primary"
               disabled={!hasSelected}
               >自动派人</Button> 
             </AutoPilotModal>         
             </div>}
-      >
+            >
        <Content className={commonStyle.content}>
            <LeftRightLayout>
               <RankPlanList />

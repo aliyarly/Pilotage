@@ -18,5 +18,6 @@ urlpatterns = [
             name='input_pilot_detail_up'),
     re_path(r'^pilot/detail/down/(?P<pilot_id>[0-9]+)/$', PilotDetailDownView.as_view(),
             name='input_pilot_detail_down'),
-                         
+    re_path(r'^pilot/auto/$', AutoInfoView.as_view(),
+            name='input_pilot_auto_deploy'),                       
 ]

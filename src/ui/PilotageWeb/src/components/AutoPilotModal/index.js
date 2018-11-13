@@ -23,6 +23,7 @@ export default　class AutoPilotModal extends Component {
     this.setState({
       visible: false,
     });
+    this.props.onCancel()
   };
 
   okHandler = () => {
@@ -46,6 +47,8 @@ export default　class AutoPilotModal extends Component {
           visible={this.state.visible}
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
+          footer={null}
+          destroyOnClose={true}
         >
         <Table  columns = {columns}
                 dataSource = {dataSource} 

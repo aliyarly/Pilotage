@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-
+import random
 from input_boat_choice.views import BaseViewNoModel
 left_list_sql = """
 select chDynPlanID,
@@ -100,11 +100,61 @@ class PilotDetailUpView(BaseViewNoModel, GenericAPIView):
         limit = self.page_handle(page_number,page_size)
         right_detail_sql_end = right_detail_sql + limit if limit else ''
         data = self.query_sql(right_detail_sql_end)
+
+        # 测试数据部分, 各个属性需要与前端对应，模拟算法处理时间
+        import time
+        time.sleep(3)
+        data={"results":
+                {
+                  "gonghao": 'planId',
+                  "dangci":  'AAA'+ str(random.random()),
+                  "xinmin": 'AAA',
+                  "gongnengdangci": 'AAA'
+                },
+            "is_success":1}
         return Response(data, status=status.HTTP_200_OK)     
 
 class PilotDetailDownView(BaseViewNoModel, GenericAPIView):
     # 获取引航员详细信息（下半部分数据）->需要自行补全算法
     def get(self, request, pilot_id):
-        data={"results":[],
+
+        # 测试数据部分
+        import time
+        time.sleep(3)
+        data={"results":{
+            # 横坐标的天数显示 
+            "dayNum": [1,2,3,4,5],
+            # 间隔时间
+            "timeValue": [10,20,10,20,10],
+            # 0表示白班，　１表示夜班
+            "timeType": [0,1,0,1,0]
+        },
+            "is_success":1}
+        return Response(data, status=status.HTTP_200_OK)
+
+
+class AutoInfoView(BaseViewNoModel, GenericAPIView):
+    # 请求自动派人的结果
+    def post(self, request):
+        # 添加处理结果
+        print(request.data, 'post传输的数据集合')
+        
+        # 测试数据部分, 模拟算法处理时间
+        import time
+        time.sleep(3)
+        data={"results":
+            [
+                {
+                  "key": 'planId',
+                  "planId":  'AAA'+ str(random.random()),
+                  "vescName": 'AAA',
+                  "vesLength": 'AAA'
+                },{
+                  "key": 'vescName',
+                  "planId":  'BBB'+ str(random.random()),
+                  "vescName": 'BBB',
+                  "vesLength": 'BBB'
+                }
+            ],
             "is_success":1}
         return Response(data, status=status.HTTP_200_OK)

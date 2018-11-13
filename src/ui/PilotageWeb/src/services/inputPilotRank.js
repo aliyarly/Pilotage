@@ -38,3 +38,17 @@ export function getPilotDownDeatil(id){
         method: 'get',
     });
 }
+
+export function getAutoPilotInfo(autoIds){
+    // 请求获取自动派人，并存储结果数据
+    return request(`${API_URL}input/rank/pilot/auto/`, {
+        method: 'post',
+        body: autoIds,
+        needSerialize: true
+    }).then(({data, err}) => {
+        if (!err) {
+          return {data};
+        }
+        return Promise.reject(err);
+      });
+}

@@ -2,7 +2,8 @@
 import { routerRedux } from 'dva/router';
 import { getPlanList, getPlanDetail, 
   getPilotRight,getPilotStatus,
-  getPilotUpDeatil, getPilotDownDeatil } from '../services/inputPilotRank.js';
+  getPilotUpDeatil, getPilotDownDeatil,
+  getAutoPilotInfo } from '../services/inputPilotRank.js';
 import {_isNotNull} from '../utils/utils';
 
 export default {
@@ -21,7 +22,6 @@ export default {
       pilotStatus: null,
       //右边详情数据
       inputPilotUpDetail: null,
-      inputPilotDownDetail: null,
       // 传递给自动派人的数据
       planIds: [],
       pilotIds: [],
@@ -90,18 +90,6 @@ export default {
               return {data}
             }  
           },
-          *queryPilotDownDeatil({payload}, {call, put}){
-            const { data, err } = yield call(getPilotDownDeatil, payload.id);
-            if (!err) {
-              yield put({
-                type: 'resetInfo',
-                payload: {
-                  inputPilotDownDetail: _isNotNull(data) ? data.results : null,
-                  },
-              }); 
-              return {data}
-            }  
-          },
           *storePlanids({payload}, {put}){
             yield put({
               type: 'resetInfo',
@@ -117,6 +105,19 @@ export default {
                 pilotIds: payload.pilotIds
               },
         })
+      },
+      *queryAutoPilotInfo({payload}, {call, put}){
+        const { data, err } = yield call(getAutoPilotInfo, payload.autoIds);
+        console.log(data, 'data from auto deploy')
+        if (!err) {
+          yield put({
+            type: 'resetInfo',
+            payload: {
+              autoData: _isNotNull(data) ? data.results : null,
+              },
+          })
+          return {data}
+        }  
       },
     },
   

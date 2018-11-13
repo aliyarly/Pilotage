@@ -61,27 +61,14 @@ export default class RankPlanList extends PureComponent {
         if(index === 0){
             console.log('click　引水')
             this.clickYinShui(record, text, index)
-        } else if(index === 1){
-            console.log('click　详情')
-            this.clickDetail(record, text, index)
         } else{
             console.log('click invalid row action')
         }
     }
 
     clickYinShui = (e) => {
-        //open model
-    }
-
-    clickDetail = (record, item) => {
-        //进入详情页面
-        console.log(record, item, 'row click')
-        this.props.dispatch({
-            type: 'inputPilotRank/routePilotDetail',
-            payload:{
-            pilotId: record.key || 1,
-            }
-        });
+        //TODO 具体显示的信息数据
+        console.log('click 引水')
     }
 
     onSelectChange = (selectedRowKeys) => {
